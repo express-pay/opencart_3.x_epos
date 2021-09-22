@@ -241,6 +241,9 @@ class ControllerExtensionPaymentEposExpressPay extends Controller
                 case '2':
                     $this->model_checkout_order->addOrderHistory($data->AccountNo, $this->config->get('payment_epos_expresspay_fail_status_id'));
                     break;
+                case '3':
+                    $this->model_checkout_order->addOrderHistory($data->AccountNo, $this->config->get('payment_epos_expresspay_success_status_id'));
+                    break;
                 default:
                     $this->notify_fail($dataJSON);
                     die();

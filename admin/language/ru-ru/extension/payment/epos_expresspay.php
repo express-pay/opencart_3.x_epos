@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']          = 'Экспресс платежи: EPOS';
+$_['heading_title']          = 'Экспресс платежи: E-POS';
 $_['text_edit']              = 'Изменить настройки';
 
 // Text
@@ -42,8 +42,8 @@ $_['serviceProviderIdTooltip'] = 'Код производителя услуг �
 $_['serviceIdLabel'] = 'Номер услуги';
 $_['serviceIdTooltip'] = 'Номер услуги в системе express-pay.by';
 
-$_['eposServiceIdLabel'] = 'Код услуги EPOS';
-$_['eposServiceIdTooltip'] = 'Код услуги EPOS в системе express-pay.by';
+$_['eposServiceIdLabel'] = 'Код услуги E-POS';
+$_['eposServiceIdTooltip'] = 'Код услуги E-POS в системе express-pay.by';
 
 $_['infoLabel'] = 'Описание заказа';
 $_['infoTooltip'] = 'Описание заказа будет отображаться при оплате клиенту';
