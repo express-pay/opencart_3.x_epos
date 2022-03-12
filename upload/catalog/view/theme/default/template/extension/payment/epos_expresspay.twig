@@ -1,0 +1,25 @@
+<form action="{{ Action }}" method="post">
+    <input type="hidden" name="ServiceId"           value="{{ ServiceId }}" />
+    <input type="hidden" name="AccountNo"           value="{{ AccountNo }}" />
+    <input type="hidden" name="Amount"              value="{{ Amount }}" />
+    <input type="hidden" name="Currency"            value="{{ Currency }}" />
+    <input type="hidden" name="Info"                value="{{ Info }}" />
+    <input type="hidden" name="Surname"             value="{{ Surname }}" />
+    <input type="hidden" name="FirstName"           value="{{ FirstName }}" />
+    <input type="hidden" name="City"                value="{{ City }}" />
+    <input type="hidden" name="EmailNotification"   value="{{ EmailNotification }}" />
+    <input type="hidden" name="SmsPhone"            value="{{ SmsPhone }}" />
+    <input type="hidden" name="IsNameEditable"      value="{{ IsNameEditable }}" />
+    <input type="hidden" name="IsAddressEditable"   value="{{ IsAddressEditable }}" />
+    <input type="hidden" name="IsAmountEditable"    value="{{ IsAmountEditable }}" />
+    <input type="hidden" name="Signature"           value="{{ Signature }}" />
+    <input type="hidden" name="ReturnType"          value="{{ ReturnType }}" />
+    <input type="hidden" name="ReturnUrl"           value="{{ ReturnUrl }}" />
+    <input type="hidden" name="FailUrl"             value="{{ FailUrl }}" />
+    <input type="hidden" name="ReturnInvoiceUrl"    value="{{ ReturnInvoiceUrl }}" />
+    <div class="buttons">
+        <div class="pull-right">
+            <input type="submit" value="{{ button_confirm }}" id="button-confirm" class="btn btn-primary" />
+        </div>
+    </div>
+</form>

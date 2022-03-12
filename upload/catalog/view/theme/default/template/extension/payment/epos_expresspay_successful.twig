@@ -1,0 +1,32 @@
+{{ header }}{{ column_left }}{{ column_right }}
+<div id="content" class="container">{{ content_top }}
+	<ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+	</ul>
+	<h2>{{ heading_title }}</h2>
+	<h3>{{ text_message }}</h3>
+	<table style="width: 100%;text-align: left;">
+		<tbody>
+				<tr>
+					<td valign="top" style="text-align:left;">
+					{{ content_body }}
+					</td>
+					{% if show_qr_code == 1 %}
+					<td style="text-align: center;padding: 40px 20px 0 0;vertical-align: middle">
+						<p><img src="data:image/jpeg;base64,{{ qr_code }}"  width="150" height="150"/></p>
+						<div style="padding:0 15px"><b>{{ qr_description }}</b></div>
+						</td>
+                    </tr>
+        			{% endif %}
+            </tbody>
+        </table>
+	<div class="buttons">
+		<div class="right">
+			<a id="button-confirm" class="btn btn-primary" data-loading-text="{{ text_loading }}" href="{{ continue }}">{{ button_continue }}</a>
+		</div>
+	</div>
+	{{ content_bottom }}
+</div>
+{{ footer }}
