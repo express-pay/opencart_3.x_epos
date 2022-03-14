@@ -8,6 +8,8 @@
 
 class ControllerExtensionPaymentEposExpressPay extends Controller{
     const IS_SHOW_QR_CODE_PARAM_NAME                = 'payment_epos_expresspay_is_show_qr_code';
+    const SERVICE_PROVIDER_ID_PARAM_NAME            = 'payment_epos_expresspay_service_provider_id';
+    const EPOS_SERVICE_ID_PARAM_NAME                = 'payment_epos_expresspay_epos_service_id';
     const PATH_IN_ERIP_PARAM_NAME                   = 'payment_epos_expresspay_path_in_erip';
     const MESSAGE_SUCCESS_PARAM_NAME                = 'payment_epos_expresspay_message_success';
     const PROCESSED_STATUS_ID_PARAM_NAME            = 'payment_epos_expresspay_processed_status_id';
@@ -39,25 +41,26 @@ class ControllerExtensionPaymentEposExpressPay extends Controller{
         $this->load->model('extension/payment/epos_expresspay');
         $this->load->model('extension/payment/epos_expresspay_log');
         $this->load->language('extension/payment/epos_expresspay');
-        $this->model_extension_payment_epos_expresspay_log->log_info("successStart", "Order Id: " . $this->session->data['order_id']);
+        $orderId = $this->session->data['order_id'];
+        $this->model_extension_payment_epos_expresspay_log->log_info("successStart", "Order Id: " . $orderId);
         $headingTitle = $this->language->get('heading_title_success');
         $this->document->setTitle($headingTitle);
         $data['heading_title'] = $headingTitle;
 
-        if (empty($this->config->get(self::MESSAGE_SUCCESS_PARAM_NAME))) {
-            $data['text_message'] = $this->language->get('text_message_success');
-        } else {
-            $data['text_message'] = $this->config->get(self::MESSAGE_SUCCESS_PARAM_NAME);
+        $textMessage = $this->config->get(self::MESSAGE_SUCCESS_PARAM_NAME);
+        if (empty($textMessage)) {
+            $textMessage = $this->language->get('text_message_success');
         }
-        $data['text_message'] = nl2br(str_replace('##order_id##', $this->session->data['order_id'], $data['text_message']));
+        $data['text_message'] = nl2br(str_replace('##order_id##', $orderId, $textMessage));
 
-        if (empty($this->config->get(self::PATH_IN_ERIP_PARAM_NAME))) {
+        $eripPath = $this->config->get(self::PATH_IN_ERIP_PARAM_NAME);
+        if (empty($eripPath)) {
             $eripPath = $this->language->get('erip_path');
-        } else {
-            $eripPath = $this->config->get(self::PATH_IN_ERIP_PARAM_NAME);
         }
         $data['content_body'] = str_replace('##erip_path##', $eripPath, $this->language->get('content_success'));
-        $data['content_body'] = nl2br(str_replace('##order_id##', $this->session->data['order_id'], $data['content_body']));
+        
+        $eposCode = $this->config->get(self::SERVICE_PROVIDER_ID_PARAM_NAME).'-'.$this->config->get(self::EPOS_SERVICE_ID_PARAM_NAME).'-'.$orderId;
+        $data['content_body'] = nl2br(str_replace('##order_id##', $eposCode, $data['content_body']));
         
 
         $data['button_continue'] = $this->language->get('button_continue');
@@ -68,13 +71,13 @@ class ControllerExtensionPaymentEposExpressPay extends Controller{
             try {
                 $qrbase64 = $this->model_extension_payment_epos_expresspay->getQrbase64($invoiceNo, $this->config);
             } catch (Exception $e) {
-                $this->model_extension_payment_epos_expresspay_log->log_error_exception('success', 'Get response; INVOICE ID - ' . $this->session->data['order_id'] . '; RESPONSE - ' . $qrbase64, $e);
+                $this->model_extension_payment_epos_expresspay_log->log_error_exception('success', 'Get response; INVOICE ID - ' . $orderId. '; RESPONSE - ' . $qrbase64, $e);
                 return;
             }
             try {
                 $qrbase64 = json_decode($qrbase64);
             } catch (Exception $e) {
-                $this->model_extension_payment_epos_expresspay_log->log_error_exception('success', 'Get response; ORDER ID - ' . $this->session->data['order_id'] . '; RESPONSE - ' . $qrbase64, $e);
+                $this->model_extension_payment_epos_expresspay_log->log_error_exception('success', 'Get response; ORDER ID - ' . $orderId . '; RESPONSE - ' . $qrbase64, $e);
             }
             if (isset($response->QrCodeBody)) 
             {
@@ -84,7 +87,7 @@ class ControllerExtensionPaymentEposExpressPay extends Controller{
         }
 
         $this->load->model('checkout/order');
-        $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get(self::PROCESSED_STATUS_ID_PARAM_NAME));
+        $this->model_checkout_order->addOrderHistory($orderId, $this->config->get(self::PROCESSED_STATUS_ID_PARAM_NAME));
 
         $data = $this->setBreadcrumbs($data);
         $data = $this->setButtons($data);
@@ -99,15 +102,16 @@ class ControllerExtensionPaymentEposExpressPay extends Controller{
     {
         $this->load->model('extension/payment/epos_expresspay_log');
         $this->load->language('extension/payment/epos_expresspay');
-        $this->model_extension_payment_epos_expresspay_log->log_info("failStart", "Order Id: " . $this->session->data['order_id']);
+        $orderId = $this->session->data['order_id'];
+        $this->model_extension_payment_epos_expresspay_log->log_info("failStart", "Order Id: " . $orderId);
         $headingTitle = $this->language->get('heading_title_fail');
         $this->document->setTitle($headingTitle);
         $data['heading_title'] = $headingTitle;
 
-        $data['text_message'] = nl2br(str_replace('##order_id##', $this->session->data['order_id'], $this->language->get('text_message_fail')));
+        $data['text_message'] = nl2br(str_replace('##order_id##', $orderId, $this->language->get('text_message_fail')));
 
         $this->load->model('checkout/order');
-        $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get(self::FAIL_STATUS_ID_PARAM_NAME));
+        $this->model_checkout_order->addOrderHistory($orderId, $this->config->get(self::FAIL_STATUS_ID_PARAM_NAME));
 
         $data = $this->setBreadcrumbs($data);
         $data = $this->setButtons($data);

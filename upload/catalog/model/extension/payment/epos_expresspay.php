@@ -52,8 +52,9 @@ class ModelExtensionPaymentEposExpressPay extends Model{
         $order_info = $this->model_checkout_order->getOrder($orderId);
         $amount = str_replace('.', ',', $this->currency->format($order_info['total'], $this->session->data['currency'], '', false));
         if ($this->session->data['currency'] !== "BYN") {
-            $response = $this->getCurrencyRateFromNBRB($this->session->data['currency']);
-            $amount = str_replace('.', ',', round($amount * $response->Cur_OfficialRate, 2));
+            $response = $this->getCurrencyRateFromNBRB($this->session->data['currency']);            
+            $CurOfficialRate = $response->Cur_OfficialRate;
+            $amount = str_replace('.', ',', round($amount * $CurOfficialRate, 2));
         }
 
         //Обрезать +
@@ -108,7 +109,7 @@ class ModelExtensionPaymentEposExpressPay extends Model{
         );
         $signatureParams['Signature'] = self::computeSignature($signatureParams, self::$model->getSecretWord(), 'get-qr-code');
 
-        return file_get_contents(self::$model->getQrCodeUrl() . http_build_query($signatureParams));
+        return self::sendRequest(self::$model->getQrCodeUrl() . http_build_query($signatureParams));
     }
 
     private function getCurrencyRateFromNBRB($currency)
@@ -116,6 +117,19 @@ class ModelExtensionPaymentEposExpressPay extends Model{
         return json_decode(file_get_contents("https://www.nbrb.by/api/exrates/rates/$currency?parammode=2"));
     }
     
+    private function sendRequest($url) 
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        return $response;
+    }
+
     /**
      * 
      * Формирование цифровой подписи

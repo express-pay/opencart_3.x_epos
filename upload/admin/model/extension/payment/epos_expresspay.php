@@ -2,7 +2,7 @@
 
 class ModelExtensionPaymentEposExpresspay extends Model
 {
-    const NOTIFICATION_URL                          = HTTPS_CATALOG . 'index.php?route=extension/payment/epos_expresspay_api/notify';
+    const NOTIFICATION_URL                          = 'index.php?route=extension/payment/epos_expresspay_api/notify';
     const NAME_PAYMENT_METHOD                       = 'payment_epos_expresspay_name_payment_method';
     const TOKEN_PARAM_NAME                          = 'payment_epos_expresspay_token';
     const SERVICE_ID_PARAM_NAME                     = 'payment_epos_expresspay_service_id';
@@ -214,7 +214,7 @@ class ModelExtensionPaymentEposExpresspay extends Model
         $data[self::SECRET_WORD_PARAM_NAME]                     = self::$model->getSecretWord();
         $data[self::USE_SIGNATURE_FOR_NOTIFICATION_PARAM_NAME]  = self::$model->getUseSignatureNotification();
         $data[self::SECRET_WORD_NOTIFICATION_PARAM_NAME]        = self::$model->getSecretWordNotification();
-        $data[self::NOTIFICATION_URL_PARAM_NAME]                = self::NOTIFICATION_URL;
+        $data[self::NOTIFICATION_URL_PARAM_NAME]                = HTTPS_CATALOG . self::NOTIFICATION_URL;
         $data[self::IS_SHOW_QR_CODE_PARAM_NAME]                 = self::$model->getIsShowQrCode();
         $data[self::IS_NAME_EDIT_PARAM_NAME]                    = self::$model->getIsNameEdit();
         $data[self::IS_AMOUNT_EDIT_PARAM_NAME]                  = self::$model->getIsAmountEdit();
