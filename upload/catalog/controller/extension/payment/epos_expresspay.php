@@ -69,20 +69,15 @@ class ControllerExtensionPaymentEposExpressPay extends Controller{
         if ($this->config->get(self::IS_SHOW_QR_CODE_PARAM_NAME)  == 'on' && isset($this->request->get['ExpressPayInvoiceNo'])) {
             $invoiceNo = $this->request->get['ExpressPayInvoiceNo'];
             try {
-                $qrbase64 = $this->model_extension_payment_epos_expresspay->getQrbase64($invoiceNo, $this->config);
+                $qrbase64json = $this->model_extension_payment_epos_expresspay->getQrbase64($invoiceNo, $this->config);
+                $qrbase64 = json_decode($qrbase64json);
+                if (isset($qrbase64->QrCodeBody))
+                {
+                    $data['qr_code'] = $qrbase64->QrCodeBody;
+                    $data['show_qr_code'] = 1;
+                }
             } catch (Exception $e) {
-                $this->model_extension_payment_epos_expresspay_log->log_error_exception('success', 'Get response; INVOICE ID - ' . $orderId. '; RESPONSE - ' . $qrbase64, $e);
-                return;
-            }
-            try {
-                $qrbase64 = json_decode($qrbase64);
-            } catch (Exception $e) {
-                $this->model_extension_payment_epos_expresspay_log->log_error_exception('success', 'Get response; ORDER ID - ' . $orderId . '; RESPONSE - ' . $qrbase64, $e);
-            }
-            if (isset($response->QrCodeBody)) 
-            {
-                $data['qr_code'] = $qrbase64->QrCodeBody;
-                $data['show_qr_code'] = 1;
+                $this->model_extension_payment_epos_expresspay_log->log_error_exception('success', 'Get response; INVOICE ID - ' . $invoiceNo. '; RESPONSE - ' . $qrbase64json, $e);
             }
         }
 

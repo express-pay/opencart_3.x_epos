@@ -8,7 +8,7 @@
 
 class ControllerExtensionPaymentEposExpresspay extends Controller
 {
-  const VERSION_EXTENSION                         = '1.0.1';
+  const VERSION_EXTENSION                         = '1.0.2';
   const NAME_PAYMENT_METHOD                       = 'payment_epos_expresspay_name_payment_method';
   const TOKEN_PARAM_NAME                          = 'payment_epos_expresspay_token';
   const SERVICE_ID_PARAM_NAME                     = 'payment_epos_expresspay_service_id';
@@ -92,7 +92,7 @@ class ControllerExtensionPaymentEposExpresspay extends Controller
 
   private function validate()
   {
-    if (!$this->user->hasPermission('modify', 'extension/payment/erip_expresspay')) {
+    if (!$this->user->hasPermission('modify', 'extension/payment/epos_expresspay')) {
       $this->error['warning'] = $this->language->get('errorPermission');
     }
 
